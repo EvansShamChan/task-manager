@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  task-manager:
+    image: 'task-manager:v1'
+    container_name: 'task-manager'
+    ports:
+      - 6666:8080
+    networks:
+      - task-manager-network
+
+networks:
+  task-manager-network:
