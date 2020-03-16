@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 
-group = 'com.productivit.task'
+group = 'com.task-manager'
 version = '0.0.1'
 sourceCompatibility = '11'
 
@@ -15,13 +15,20 @@ configurations {
 }
 
 repositories {
+	mavenLocal()
 	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+	maven { url 'https://repo.spring.io/plugins-release' }
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.0.3.RELEASE'
+	compile group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '2.0.0'
+	compile group: 'org.postgresql', name: 'postgresql', version: '42.2.11'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
