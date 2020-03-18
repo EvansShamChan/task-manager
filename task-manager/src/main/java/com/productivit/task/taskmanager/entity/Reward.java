@@ -1,9 +1,11 @@
 package com.productivit.task.taskmanager.entity;
 
 import com.productivit.task.taskmanager.enums.RewardStatus;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class Reward {
 
     private Long id;
