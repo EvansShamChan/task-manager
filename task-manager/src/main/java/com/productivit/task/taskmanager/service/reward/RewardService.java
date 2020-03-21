@@ -1,5 +1,6 @@
 package com.productivit.task.taskmanager.service.reward;
 
+import com.productivit.task.taskmanager.dto.RewardDto;
 import com.productivit.task.taskmanager.dto.UpdateRewardDto;
 import com.productivit.task.taskmanager.entity.Reward;
 import com.productivit.task.taskmanager.enums.RewardStatus;
@@ -45,5 +46,15 @@ public class RewardService {
 
     public void setRewardActive(Long chatId, Long rewardId) {
         rewardRepository.setActiveReward(chatId, rewardId);
+    }
+
+    public RewardDto getActiveReward(Long chatId) {
+        Reward activeReward = rewardRepository.findActiveReward(chatId);
+
+        return RewardDto.builder()
+                .id(activeReward.getId())
+                .description(activeReward.getDescription())
+                .neededDays(activeReward.getNeededDays())
+                .build();
     }
 }

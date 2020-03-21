@@ -1,5 +1,6 @@
 package com.productivit.task.taskmanager.controller.reward;
 
+import com.productivit.task.taskmanager.dto.RewardDto;
 import com.productivit.task.taskmanager.dto.UpdateRewardDto;
 import com.productivit.task.taskmanager.service.reward.RewardService;
 import lombok.AllArgsConstructor;
@@ -31,5 +32,10 @@ public class RewardController {
     public void setRewardActive(@PathVariable("chatId") Long chatId,
                                 @PathVariable("rewardId") Long rewardId) {
         rewardService.setRewardActive(chatId, rewardId);
+    }
+
+    @GetMapping("active/{chatId}")
+    public RewardDto getActiveReward(@PathVariable("chatId") Long chatId) {
+        return rewardService.getActiveReward(chatId);
     }
 }
