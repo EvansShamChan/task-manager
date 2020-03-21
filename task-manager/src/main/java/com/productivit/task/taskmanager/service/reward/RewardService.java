@@ -7,13 +7,10 @@ import com.productivit.task.taskmanager.repository.reward.RewardRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -21,31 +18,32 @@ public class RewardService {
 
     private RewardRepository rewardRepository;
 
-    public Long addBlankReward(Long chatId) {
+    public Long addReward(UpdateRewardDto updateRewardDto) {
         Reward newReward = Reward.builder()
                 .status(RewardStatus.CREATED)
                 .createdTimestamp(Timestamp.valueOf(LocalDateTime.now()))
                 .updatedTimestamp(Timestamp.valueOf(LocalDateTime.now()))
-                .chatId(chatId)
+                .chatId(updateRewardDto.getChatId())
+                .description(updateRewardDto.getDescription())
+                .neededDays(updateRewardDto.getDays())
                 .build();
 
-        return rewardRepository.save(newReward).getId();
-    }
+        Reward createdReward = rewardRepository.save(newReward);
 
-    public void updateReward(UpdateRewardDto updateRewardDto) {
-        Reward reward = rewardRepository.findById(updateRewardDto.getRewardId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reward not found."));
+        Reward activeReward = rewardRepository.findActiveReward(updateRewardDto.getChatId());
 
-        if (updateRewardDto.getDescription() != null) {
-            reward.setDescription(updateRewardDto.getDescription());
-        } else if (updateRewardDto.getDays() != null) {
-            reward.setNeededDays(updateRewardDto.getDays());
-        } else return;
-
-        rewardRepository.save(reward);
+        if (activeReward == null) {
+            throw new ResponseStatusException(HttpStatus.MULTI_STATUS, createdReward.getId().toString());
+        } else {
+            return createdReward.getId();
+        }
     }
 
     public void deleteById(Long rewardId) {
         rewardRepository.deleteById(rewardId);
+    }
+
+    public void setRewardActive(Long chatId, Long rewardId) {
+        rewardRepository.setActiveReward(chatId, rewardId);
     }
 }

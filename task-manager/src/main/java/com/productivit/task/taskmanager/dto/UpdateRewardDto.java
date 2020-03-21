@@ -5,8 +5,6 @@ import lombok.Data;
 @Data
 public class UpdateRewardDto {
 
-    private Long rewardId;
-
     private Long chatId;
 
     private String description;

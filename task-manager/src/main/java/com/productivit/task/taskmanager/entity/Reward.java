@@ -29,7 +29,7 @@ public class Reward {
     @Column(name = "needed_days")
     private Integer neededDays;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private RewardStatus status;
 

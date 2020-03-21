@@ -13,16 +13,10 @@ public class RewardController {
 
     private RewardService rewardService;
 
-    @PostMapping("{chatId}")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long addBlankReward(@PathVariable("chatId") Long chatId) {
-        return rewardService.addBlankReward(chatId);
-    }
-
-    @PutMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateReward(@RequestBody UpdateRewardDto updateRewardDto) {
-        rewardService.updateReward(updateRewardDto);
+    public Long addReward(@RequestBody UpdateRewardDto updateRewardDto) {
+        return rewardService.addReward(updateRewardDto);
     }
 
     // todo: add check if reward belongs to this chatId
@@ -30,5 +24,12 @@ public class RewardController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReward(@PathVariable("rewardId") Long rewardId) {
         rewardService.deleteById(rewardId);
+    }
+
+    @PutMapping("{chatId}/reward/{rewardId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void setRewardActive(@PathVariable("chatId") Long chatId,
+                                @PathVariable("rewardId") Long rewardId) {
+        rewardService.setRewardActive(chatId, rewardId);
     }
 }
