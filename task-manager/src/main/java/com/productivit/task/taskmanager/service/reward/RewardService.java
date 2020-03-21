@@ -44,4 +44,8 @@ public class RewardService {
 
         rewardRepository.save(reward);
     }
+
+    public void deleteById(Long rewardId) {
+        rewardRepository.deleteById(rewardId);
+    }
 }

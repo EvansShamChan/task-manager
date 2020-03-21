@@ -24,4 +24,11 @@ public class RewardController {
     public void updateReward(@RequestBody UpdateRewardDto updateRewardDto) {
         rewardService.updateReward(updateRewardDto);
     }
+
+    // todo: add check if reward belongs to this chatId
+    @DeleteMapping("{rewardId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteReward(@PathVariable("rewardId") Long rewardId) {
+        rewardService.deleteById(rewardId);
+    }
 }
