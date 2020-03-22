@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("reward")
 @AllArgsConstructor
@@ -37,5 +39,11 @@ public class RewardController {
     @GetMapping("active/{chatId}")
     public RewardDto getActiveReward(@PathVariable("chatId") Long chatId) {
         return rewardService.getActiveReward(chatId);
+    }
+
+    @GetMapping("{chatId}/page/{currentPage}")
+    public List<RewardDto> getRewards(@PathVariable("chatId") Long chatId,
+                                      @PathVariable("currentPage") Integer currentPage) {
+        return rewardService.getRewards(chatId, currentPage);
     }
 }

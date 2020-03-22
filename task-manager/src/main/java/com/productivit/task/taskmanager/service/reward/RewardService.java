@@ -12,10 +12,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class RewardService {
+
+    private static final Integer REWARDS_PER_PAGE = 5;
 
     private RewardRepository rewardRepository;
 
@@ -56,5 +60,19 @@ public class RewardService {
                 .description(activeReward.getDescription())
                 .neededDays(activeReward.getNeededDays())
                 .build();
+    }
+
+    public List<RewardDto> getRewards(Long chatId, Integer currentPage) {
+        Integer offset = currentPage * REWARDS_PER_PAGE;
+        List<Reward> rewardsForPage = rewardRepository.getRewardsForPage(chatId, REWARDS_PER_PAGE, offset);
+        System.out.println(rewardsForPage.stream().map(Reward::getId).collect(Collectors.toList()));
+
+        return rewardsForPage.stream().map(reward ->
+                RewardDto.builder()
+                        .id(reward.getId())
+                        .description(reward.getDescription())
+                        .neededDays(reward.getNeededDays())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
