@@ -8,6 +8,7 @@ import com.productivit.task.taskmanager.repository.reward.RewardRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
@@ -48,7 +49,13 @@ public class RewardService {
         rewardRepository.deleteById(rewardId);
     }
 
+    @Transactional
     public void setRewardActive(Long chatId, Long rewardId) {
+        Reward activeReward = rewardRepository.findActiveReward(chatId);
+        if (activeReward != null) {
+            activeReward.setStatus(RewardStatus.CREATED);
+            rewardRepository.save(activeReward);
+        }
         rewardRepository.setActiveReward(chatId, rewardId);
     }
 
