@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,7 +19,7 @@ public class RewardController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long addReward(@RequestBody UpdateRewardDto updateRewardDto) {
+    public Long addReward(@Valid @RequestBody UpdateRewardDto updateRewardDto) {
         return rewardService.addReward(updateRewardDto);
     }
 
