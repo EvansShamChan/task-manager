@@ -7,11 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RewardRepository extends JpaRepository<Reward, Long> {
 
     @Query(value = "SELECT * FROM reward WHERE chat_id = :chatId and status = 'ACTIVE'", nativeQuery = true)
-    Reward findActiveReward(@Param("chatId") Long chatId);
+    Optional<Reward> findActiveReward(@Param("chatId") Long chatId);
 
     @Modifying
     @Query(value = "UPDATE reward SET status = 'ACTIVE' WHERE id = :rewardId AND chat_id = :chatId", nativeQuery = true)

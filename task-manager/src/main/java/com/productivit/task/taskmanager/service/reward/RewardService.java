@@ -36,13 +36,10 @@ public class RewardService {
 
         Reward createdReward = rewardRepository.save(newReward);
 
-        Reward activeReward = rewardRepository.findActiveReward(updateRewardDto.getChatId());
+        rewardRepository.findActiveReward(updateRewardDto.getChatId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.MULTI_STATUS, createdReward.getId().toString()));
 
-        if (activeReward == null) {
-            throw new ResponseStatusException(HttpStatus.MULTI_STATUS, createdReward.getId().toString());
-        } else {
-            return createdReward.getId();
-        }
+        return createdReward.getId();
     }
 
     public void deleteById(Long rewardId) {
@@ -51,7 +48,7 @@ public class RewardService {
 
     @Transactional
     public void setRewardActive(Long chatId, Long rewardId) {
-        Reward activeReward = rewardRepository.findActiveReward(chatId);
+        Reward activeReward = rewardRepository.findActiveReward(chatId).get();
         if (activeReward != null) {
             activeReward.setStatus(RewardStatus.CREATED);
             rewardRepository.save(activeReward);
@@ -60,7 +57,8 @@ public class RewardService {
     }
 
     public RewardDto getActiveReward(Long chatId) {
-        Reward activeReward = rewardRepository.findActiveReward(chatId);
+        Reward activeReward = rewardRepository.findActiveReward(chatId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         return RewardDto.builder()
                 .id(activeReward.getId())
