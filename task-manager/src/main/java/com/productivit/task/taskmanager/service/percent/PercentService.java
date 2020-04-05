@@ -23,6 +23,7 @@ public class PercentService {
                             .percent(DEFAULT_PERCENT)
                             .build()
             );
+            return DEFAULT_PERCENT;
         }
         return currentPercent;
     }
