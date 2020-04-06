@@ -1,4 +1,4 @@
-package com.productivit.task.taskmanager.dto;
+package com.productivit.task.taskmanager.dto.reward;
 
 import lombok.Data;
 

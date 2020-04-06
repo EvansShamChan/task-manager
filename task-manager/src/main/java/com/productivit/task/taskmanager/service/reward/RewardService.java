@@ -1,7 +1,7 @@
 package com.productivit.task.taskmanager.service.reward;
 
-import com.productivit.task.taskmanager.dto.RewardDto;
-import com.productivit.task.taskmanager.dto.UpdateRewardDto;
+import com.productivit.task.taskmanager.dto.reward.RewardDto;
+import com.productivit.task.taskmanager.dto.reward.UpdateRewardDto;
 import com.productivit.task.taskmanager.entity.Reward;
 import com.productivit.task.taskmanager.enums.RewardStatus;
 import com.productivit.task.taskmanager.repository.reward.RewardRepository;
