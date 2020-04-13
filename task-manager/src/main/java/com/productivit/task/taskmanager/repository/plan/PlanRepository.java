@@ -12,5 +12,5 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
     @Query(value = "SELECT id FROM plan WHERE chat_id = :chatId AND assigned_date = :assignedDate",
             nativeQuery = true)
     Long getIdByAssignedDateAndAndChatId(@Param("assignedDate") Date assignedDate,
-                                            @Param("assignedDate") Long chatId);
+                                            @Param("chatId") Long chatId);
 }

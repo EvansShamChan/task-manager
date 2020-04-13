@@ -49,7 +49,6 @@ public class TaskService {
     public void markAsDone(MarkTaskAsDoneDto markTaskAsDoneDto) {
         taskRepository.setTaskAsDone(
                 markTaskAsDoneDto.getDonePoints(),
-                markTaskAsDoneDto.getChatId(),
-                markTaskAsDoneDto.getAssignedDate());
+                markTaskAsDoneDto.getTaskId());
     }
 }

@@ -80,4 +80,8 @@ public class RewardService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    public Integer getNeededDays(Long chatId) {
+        return rewardRepository.getNeededDays(chatId);
+    }
 }

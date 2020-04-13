@@ -2,8 +2,6 @@ package com.productivit.task.taskmanager.dto.task;
 
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
 public class AddTaskDto {
 
@@ -13,5 +11,5 @@ public class AddTaskDto {
 
     private Long chatId;
 
-    private Date assignedDate;
+    private String assignedDate;
 }

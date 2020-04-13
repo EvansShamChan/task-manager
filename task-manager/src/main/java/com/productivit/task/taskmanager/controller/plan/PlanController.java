@@ -7,8 +7,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-
 @RestController
 @RequestMapping("plan")
 @AllArgsConstructor
@@ -23,7 +21,7 @@ public class PlanController {
     }
 
     @GetMapping("{assignedDate}/chat/{chatId}")
-    public PlanDto getPlan(@PathVariable("assignedDate") Date assignedDate,
+    public PlanDto getPlan(@PathVariable("assignedDate") String assignedDate,
                            @PathVariable("chatId") Long chatId) {
         return planService.getPlan(assignedDate, chatId);
     }

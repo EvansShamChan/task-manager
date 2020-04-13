@@ -6,14 +6,16 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Date;
+import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Modifying
-    @Query(value = "UPDATE plan SET status = 'DONE', done_points = :donePoints WHERE chat_id = :chatId " +
-            "AND assigned_date = :assignedDate AND id: taskId", nativeQuery = true)
+    @Query(value = "UPDATE task SET status = 'DONE', done_points = :donePoints WHERE id = :taskId",
+            nativeQuery = true)
     void setTaskAsDone(@Param("donePoints") Integer donePoints,
-                       @Param("chatId") Long chatId,
-                       @Param("assignedDate") Date assignedDate);
+                       @Param("taskId") Long taskId);
+
+    @Query(value = "SELECT * FROM task WHERE plan_id = :planId", nativeQuery = true)
+    List<Task> getPlanTasks(@Param("planId") Long planId);
 }

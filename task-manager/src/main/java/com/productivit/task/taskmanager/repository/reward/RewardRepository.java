@@ -23,4 +23,7 @@ public interface RewardRepository extends JpaRepository<Reward, Long> {
     List<Reward> getRewardsForPage(@Param("chatId") Long chatId,
                                    @Param("limit") Integer limit,
                                    @Param("offset") Integer offset);
+
+    @Query(value = "SELECT needed_days FROM reward WHERE chat_id = :chatId AND status = 'ACTIVE'", nativeQuery = true)
+    Integer getNeededDays(@Param("chatId") Long chatId);
 }

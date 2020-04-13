@@ -1,21 +1,22 @@
 package com.productivit.task.taskmanager.dto.plan;
 
-import com.productivit.task.taskmanager.entity.Task;
+import com.productivit.task.taskmanager.dto.task.TaskDto;
+import lombok.Builder;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
 @Data
+@Builder
 public class PlanDto {
 
-    private Date assignedDate;
+    private String assignedDate;
 
     private Integer rewardNeededDays;
 
     private Integer rewardDoneDays;
 
-    private List<Task> tasks;
+    private List<TaskDto> tasks;
 
     private Integer percent;
 }
