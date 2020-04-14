@@ -51,7 +51,7 @@ public class PlanService {
         Long planId = getIdByAssignedDateAndAndChatId(assignedDate, chatId);
 
         if (planId == null) {
-            createNewPlan(assignedDate, chatId);
+            planId = createNewPlan(assignedDate, chatId).getId();
         }
 
         return PlanDto.builder()
