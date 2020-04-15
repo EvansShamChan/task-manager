@@ -4,6 +4,7 @@ import com.productivit.task.taskmanager.dto.task.AddTaskDto;
 import com.productivit.task.taskmanager.dto.task.MarkTaskAsDoneDto;
 import com.productivit.task.taskmanager.entity.Task;
 import com.productivit.task.taskmanager.enums.TaskStatus;
+import com.productivit.task.taskmanager.projection.PlanStatusIdProjection;
 import com.productivit.task.taskmanager.repository.task.TaskRepository;
 import com.productivit.task.taskmanager.service.plan.PlanService;
 import lombok.AllArgsConstructor;
@@ -25,11 +26,14 @@ public class TaskService {
 
     public void addTask(AddTaskDto addTaskDto) {
 
-        Long assignedPlanId = planService
-                .getIdByAssignedDateAndAndChatId(addTaskDto.getAssignedDate(), addTaskDto.getChatId());
+        PlanStatusIdProjection projection = planService
+                .getIdStatusByAssignedDateAndAndChatId(addTaskDto.getAssignedDate(), addTaskDto.getChatId());
 
-        if (assignedPlanId == null) {
+        Long assignedPlanId;
+        if (projection == null || projection.getId() == null) {
             assignedPlanId = planService.createPlan(addTaskDto.getAssignedDate(), addTaskDto.getChatId());
+        } else {
+            assignedPlanId = projection.getId();
         }
 
         Task newTask = Task.builder()

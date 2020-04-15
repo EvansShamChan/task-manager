@@ -5,6 +5,7 @@ import com.productivit.task.taskmanager.dto.reward.RewardDto;
 import com.productivit.task.taskmanager.entity.Plan;
 import com.productivit.task.taskmanager.enums.PlanStatus;
 import com.productivit.task.taskmanager.mapper.TaskDtoMapper;
+import com.productivit.task.taskmanager.projection.PlanStatusIdProjection;
 import com.productivit.task.taskmanager.repository.plan.PlanRepository;
 import com.productivit.task.taskmanager.repository.task.TaskRepository;
 import com.productivit.task.taskmanager.service.percent.PercentService;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,7 +39,7 @@ public class PlanService {
         return createdPlan.getId();
     }
 
-    public Long getIdByAssignedDateAndAndChatId(String assignedDate, Long chatId) {
+    public PlanStatusIdProjection getIdStatusByAssignedDateAndAndChatId(String assignedDate, Long chatId) {
         Date parsedDate = null;
         try {
             parsedDate = new SimpleDateFormat("yyyy-MM-dd").parse(assignedDate);
@@ -48,10 +50,15 @@ public class PlanService {
     }
 
     public PlanDto getPlan(String assignedDate, Long chatId) {
-        Long planId = getIdByAssignedDateAndAndChatId(assignedDate, chatId);
+        PlanStatusIdProjection projection = getIdStatusByAssignedDateAndAndChatId(assignedDate, chatId);
 
-        if (planId == null) {
+        Long planId;
+        String status = null;
+        if (projection == null) {
             planId = createNewPlan(assignedDate, chatId).getId();
+        } else {
+            planId = projection.getId();
+            status = projection.getStatus();
         }
 
         return PlanDto.builder()
@@ -60,6 +67,7 @@ public class PlanService {
                 .rewardNeededDays(rewardService.getNeededDays(chatId))
                 .tasks(TaskDtoMapper.mapTasks(taskRepository.getPlanTasks(planId)))
                 .rewardDoneDays(0)
+                .planStatus(status)
                 .build();
     }
 
@@ -87,5 +95,16 @@ public class PlanService {
                 .build();
 
         return planRepository.save(newPlan);
+    }
+
+    @Transactional
+    public void markPlanAsFinished(String assignedDate, Long chatId) {
+        Date parsedDate = null;
+        try {
+            parsedDate = new SimpleDateFormat("yyyy-MM-dd").parse(assignedDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        planRepository.markPlanAsFinished(parsedDate, chatId);
     }
 }

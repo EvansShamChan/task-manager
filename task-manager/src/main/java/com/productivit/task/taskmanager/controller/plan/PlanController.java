@@ -25,4 +25,10 @@ public class PlanController {
                            @PathVariable("chatId") Long chatId) {
         return planService.getPlan(assignedDate, chatId);
     }
+
+    @PutMapping("{assignedDate}/chat/{chatId}")
+    public void markPlanAsFinished(@PathVariable("assignedDate") String assignedDate,
+                                   @PathVariable("chatId") Long chatId) {
+        planService.markPlanAsFinished(assignedDate, chatId);
+    }
 }

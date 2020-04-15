@@ -19,4 +19,6 @@ public class PlanDto {
     private List<TaskDto> tasks;
 
     private Integer percent;
+
+    private String planStatus;
 }
