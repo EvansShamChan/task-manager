@@ -5,7 +5,9 @@ import com.productivit.task.taskmanager.dto.reward.UpdateRewardDto;
 import com.productivit.task.taskmanager.entity.Reward;
 import com.productivit.task.taskmanager.enums.RewardStatus;
 import com.productivit.task.taskmanager.projection.RewardDaysProjection;
+import com.productivit.task.taskmanager.repository.plan.PlanRepository;
 import com.productivit.task.taskmanager.repository.reward.RewardRepository;
+import com.productivit.task.taskmanager.service.plan.PlanService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ public class RewardService {
     private static final Integer REWARDS_PER_PAGE = 5;
 
     private RewardRepository rewardRepository;
+
+    private PlanRepository planRepository;
 
     public Long addReward(UpdateRewardDto updateRewardDto) {
         Reward newReward = Reward.builder()
@@ -55,6 +59,7 @@ public class RewardService {
             activeReward.setStatus(RewardStatus.CREATED);
             rewardRepository.save(activeReward);
         }
+        planRepository.updatePlanKeysOnRewardActivation(chatId, rewardId);
         rewardRepository.setActiveReward(chatId, rewardId);
     }
 

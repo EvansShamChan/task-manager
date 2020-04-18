@@ -20,4 +20,9 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
     @Query(value = "UPDATE plan SET status = 'FINISHED' WHERE chat_id = :chatId AND assigned_date = :assignedDate",
             nativeQuery = true)
     void markPlanAsFinished(@Param("assignedDate") Date assignedDate, @Param("chatId") Long chatId);
+
+    @Modifying
+    @Query(value = "UPDATE plan SET reward_id = :newRewardId WHERE chat_id = :chatId AND status = 'CREATED'",
+            nativeQuery = true)
+    void updatePlanKeysOnRewardActivation(@Param("chatId") Long chatId, @Param("newRewardId") Long rewardId);
 }
