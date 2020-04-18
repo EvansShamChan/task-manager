@@ -1,11 +1,13 @@
 package com.productivit.task.taskmanager.service.plan;
 
+import com.productivit.task.taskmanager.dto.plan.MarkPlanAsFinishedDto;
 import com.productivit.task.taskmanager.dto.plan.PlanDto;
 import com.productivit.task.taskmanager.dto.reward.RewardDto;
 import com.productivit.task.taskmanager.entity.Plan;
 import com.productivit.task.taskmanager.enums.PlanStatus;
 import com.productivit.task.taskmanager.mapper.TaskDtoMapper;
 import com.productivit.task.taskmanager.projection.PlanStatusIdProjection;
+import com.productivit.task.taskmanager.projection.RewardDaysProjection;
 import com.productivit.task.taskmanager.repository.plan.PlanRepository;
 import com.productivit.task.taskmanager.repository.task.TaskRepository;
 import com.productivit.task.taskmanager.service.percent.PercentService;
@@ -26,13 +28,13 @@ import java.util.Date;
 @AllArgsConstructor
 public class PlanService {
 
-    private PlanRepository planRepository;
+    private final PlanRepository planRepository;
 
-    private RewardService rewardService;
+    private final RewardService rewardService;
 
-    private PercentService percentService;
+    private final PercentService percentService;
 
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
     public Long createPlan(String assignedDate, Long chatId) {
         Plan createdPlan = createNewPlan(assignedDate, chatId);
@@ -61,12 +63,14 @@ public class PlanService {
             status = projection.getStatus();
         }
 
+        RewardDaysProjection daysInfo = rewardService.getDaysInfo(chatId);
+
         return PlanDto.builder()
                 .percent(percentService.getCurrentPercent(chatId))
                 .assignedDate(assignedDate)
-                .rewardNeededDays(rewardService.getNeededDays(chatId))
+                .rewardNeededDays(daysInfo.getNeededDays())
                 .tasks(TaskDtoMapper.mapTasks(taskRepository.getPlanTasks(planId)))
-                .rewardDoneDays(0)
+                .rewardDoneDays(daysInfo.getDoneDays())
                 .planStatus(status)
                 .build();
     }
@@ -98,13 +102,19 @@ public class PlanService {
     }
 
     @Transactional
-    public void markPlanAsFinished(String assignedDate, Long chatId) {
+    public void markPlanAsFinished(MarkPlanAsFinishedDto dto) {
         Date parsedDate = null;
         try {
-            parsedDate = new SimpleDateFormat("yyyy-MM-dd").parse(assignedDate);
+            parsedDate = new SimpleDateFormat("yyyy-MM-dd").parse(dto.getAssignedDate());
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        planRepository.markPlanAsFinished(parsedDate, chatId);
+        planRepository.markPlanAsFinished(parsedDate, dto.getChatId());
+
+        Integer currentPercent = percentService.getCurrentPercent(dto.getChatId());
+
+        if (dto.getDonePercentage() >= currentPercent) {
+            rewardService.incrementDoneDays(dto.getChatId());
+        }
     }
 }

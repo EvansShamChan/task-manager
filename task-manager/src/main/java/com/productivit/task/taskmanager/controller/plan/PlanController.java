@@ -1,6 +1,7 @@
 package com.productivit.task.taskmanager.controller.plan;
 
 import com.productivit.task.taskmanager.dto.plan.CreatePlanDto;
+import com.productivit.task.taskmanager.dto.plan.MarkPlanAsFinishedDto;
 import com.productivit.task.taskmanager.dto.plan.PlanDto;
 import com.productivit.task.taskmanager.service.plan.PlanService;
 import lombok.AllArgsConstructor;
@@ -26,9 +27,8 @@ public class PlanController {
         return planService.getPlan(assignedDate, chatId);
     }
 
-    @PutMapping("{assignedDate}/chat/{chatId}")
-    public void markPlanAsFinished(@PathVariable("assignedDate") String assignedDate,
-                                   @PathVariable("chatId") Long chatId) {
-        planService.markPlanAsFinished(assignedDate, chatId);
+    @PutMapping
+    public void markPlanAsFinished(@RequestBody MarkPlanAsFinishedDto dto) {
+        planService.markPlanAsFinished(dto);
     }
 }

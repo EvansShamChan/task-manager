@@ -12,4 +12,6 @@ public class RewardDto {
     private String description;
 
     private Integer neededDays;
+
+    private Integer doneDays;
 }

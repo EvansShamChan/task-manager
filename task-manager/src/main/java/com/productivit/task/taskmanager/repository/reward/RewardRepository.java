@@ -1,6 +1,7 @@
 package com.productivit.task.taskmanager.repository.reward;
 
 import com.productivit.task.taskmanager.entity.Reward;
+import com.productivit.task.taskmanager.projection.RewardDaysProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,6 +25,12 @@ public interface RewardRepository extends JpaRepository<Reward, Long> {
                                    @Param("limit") Integer limit,
                                    @Param("offset") Integer offset);
 
-    @Query(value = "SELECT needed_days FROM reward WHERE chat_id = :chatId AND status = 'ACTIVE'", nativeQuery = true)
-    Integer getNeededDays(@Param("chatId") Long chatId);
+    @Query("SELECT new com.productivit.task.taskmanager.projection.RewardDaysProjection(neededDays, doneDays) " +
+            "FROM Reward WHERE chatId = :chatId AND status = 'ACTIVE'")
+    RewardDaysProjection getDaysInfo(@Param("chatId") Long chatId);
+
+    @Modifying
+    @Query(value = "UPDATE reward SET done_days = done_days + 1 WHERE chat_id = :chatId AND status = 'ACTIVE'",
+            nativeQuery = true)
+    void incrementDoneDays(@Param("chatId") Long chatId);
 }

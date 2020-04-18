@@ -41,4 +41,7 @@ public class Reward {
 
     @Column(name = "chat_id", nullable = false)
     private Long chatId;
+
+    @Column(name = "done_days")
+    private Integer doneDays;
 }

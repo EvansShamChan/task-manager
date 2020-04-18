@@ -4,6 +4,7 @@ import com.productivit.task.taskmanager.dto.reward.RewardDto;
 import com.productivit.task.taskmanager.dto.reward.UpdateRewardDto;
 import com.productivit.task.taskmanager.entity.Reward;
 import com.productivit.task.taskmanager.enums.RewardStatus;
+import com.productivit.task.taskmanager.projection.RewardDaysProjection;
 import com.productivit.task.taskmanager.repository.reward.RewardRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,7 @@ public class RewardService {
                 .chatId(updateRewardDto.getChatId())
                 .description(updateRewardDto.getDescription())
                 .neededDays(updateRewardDto.getDays())
+                .doneDays(0)
                 .build();
 
         Reward createdReward = rewardRepository.save(newReward);
@@ -70,18 +72,22 @@ public class RewardService {
     public List<RewardDto> getRewards(Long chatId, Integer currentPage) {
         Integer offset = currentPage * REWARDS_PER_PAGE;
         List<Reward> rewardsForPage = rewardRepository.getRewardsForPage(chatId, REWARDS_PER_PAGE, offset);
-        System.out.println(rewardsForPage.stream().map(Reward::getId).collect(Collectors.toList()));
 
         return rewardsForPage.stream().map(reward ->
                 RewardDto.builder()
                         .id(reward.getId())
                         .description(reward.getDescription())
                         .neededDays(reward.getNeededDays())
+                        .doneDays(reward.getDoneDays())
                         .build())
                 .collect(Collectors.toList());
     }
 
-    public Integer getNeededDays(Long chatId) {
-        return rewardRepository.getNeededDays(chatId);
+    public RewardDaysProjection getDaysInfo(Long chatId) {
+        return rewardRepository.getDaysInfo(chatId);
+    }
+
+    public void incrementDoneDays(Long chatId) {
+        rewardRepository.incrementDoneDays(chatId);
     }
 }
